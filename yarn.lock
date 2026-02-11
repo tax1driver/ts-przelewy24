@@ -18,9 +18,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ingameltd/node-przelewy24@workspace:.":
+"@tax1driver/ts-przelewy24@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@ingameltd/node-przelewy24@workspace:."
+  resolution: "@tax1driver/ts-przelewy24@workspace:."
   dependencies:
     "@types/node": "npm:^18"
     "@types/qs": "npm:^6.14.0"

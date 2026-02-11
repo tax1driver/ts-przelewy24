@@ -1,5 +1,5 @@
 {
-  "name": "@ingameltd/node-przelewy24",
+  "name": "@tax1driver/ts-przelewy24",
   "version": "2.1.0",
   "description": "A simple library for connecting przelewy24 service",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ingameltd/node-przelewy24.git"
+    "url": "git+https://github.com/tax1driver/ts-przelewy24.git"
   },
   "keywords": [
     "przelewy24",
@@ -30,9 +30,9 @@
   "author": "Kasun Vithanage",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ingameltd/node-przelewy24/issues"
+    "url": "https://github.com/tax1driver/ts-przelewy24/issues"
   },
-  "homepage": "https://github.com/ingameltd/node-przelewy24#readme",
+  "homepage": "https://github.com/tax1driver/ts-przelewy24#readme",
   "devDependencies": {
     "@types/node": "^18",
     "@types/qs": "^6.14.0",

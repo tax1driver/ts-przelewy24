@@ -1,28 +1,27 @@
-# Przelewy24 for NodeJS
+# ts-przelewy24
 
-![Build](https://github.com/ingameltd/node-przelewy24/workflows/Build/badge.svg) ![](https://img.shields.io/github/license/ingameltd/node-przelewy24) ![](https://img.shields.io/npm/v/@ingameltd/node-przelewy24) ![](https://img.shields.io/github/last-commit/ingameltd/node-przelewy24)
+![Build](https://github.com/tax1driver/ts-przelewy24/workflows/Build/badge.svg) ![](https://img.shields.io/github/license/tax1driver/ts-przelewy24) ![](https://img.shields.io/npm/v/@tax1driver/ts-przelewy24) ![](https://img.shields.io/github/last-commit/tax1driver/ts-przelewy24)
 
-NodeJS Library for [**Przelewy24**](https://przelewy24.pl/). This library is written in Typescript to provide
-best typesafety.
+A type safe Przelewy24 client for TypeScript. Originally authored by [kasvith](https://github.com/kasvith), updated by me to extend API coverage.
 
 This library provides an elegant way to create/verify transactions easily.
 
-**Note: Now this library uses the new REST API availiable in [here](https://developers.przelewy24.pl/index.php?en).**
+**Note: Now this library uses the new REST API available in [here](https://developers.przelewy24.pl/index.php?en).**
 
-> Previous legacy API support is still availiable in **v1.1.1**
-> Future versions will support new REST API only, If you use legacy API please use that version
-
-## Documentation
-
-Documentation can be in read [here](https://ingameltd.github.io/node-przelewy24).
+> Previous legacy API support is still available in **v1.1.1**
+> Future versions will support new REST API only. If you use legacy API please use that version.
 
 ## Installation
 
 ```bash
-npm install --save @ingameltd/node-przelewy24
+npm install --save @tax1driver/ts-przelewy24
 ```
 
-## Typescript
+## Reference
+
+[Full API & Types Reference](https://tax1driver.github.io/ts-przelewy24)
+
+## Basic Usage
 
 ### Importing
 
@@ -35,7 +34,7 @@ import {
   Language,
   NotificationRequest,
   Verification
-} from "@ingameltd/node-przelewy24";
+} from "@tax1driver/ts-przelewy24";
 ```
 
 ### Initialization
@@ -57,16 +56,18 @@ const p24 = new P24(
 );
 ```
 
-### Testing access to P24
+### Test access to P24
+
+Test your connection to the Przelewy24 API.
 
 ```typescript
 const result = await p24.testAccess();
-console.log(result); // true on success or an error being throw P24Error
+console.log(result); // true on success or an error being thrown P24Error
 ```
 
-### Get payment link
+### Create an order
 
-Prepare following details to initiate a payment
+Prepare the following details to initiate a payment:
 
 ```typescript
 const order: Order = {
@@ -83,24 +84,22 @@ const order: Order = {
   encoding: Encoding.UTF8,
 }
 const result = await p24.createTransaction(order)
-console.log(result) // prints a valid url to pay the payment or throws an error
+console.log(result) // returns a valid URL to complete payment or throws an error
 ```
 
-### Verify Notification
+### Verify notification
 
-P24 system will send you a notification to the `urlStatus` provided in
-transaction order. You need to **verify** this Notification request before actually **Verify Transaction**
+The P24 system will send a notification to the `urlStatus` provided in the transaction order. You need to **verify** this notification request before verifying the transaction.
 
 ```typescript
 const verify: NotificationRequest = req.body
 const res = p24.verifyNotification(verify)
-console.log(res) // true when the Notification is valid
+console.log(res) // true when the notification is valid
 ```
 
-### Verifies a transaction with P24
+### Verify transaction
 
-To accept the payment to your merchant account, after validating the Notification
-request, you need to verify the transaction with P24 system. **If you don't do that the funds will not be transferred into your account**.
+To accept the payment to your merchant account, after validating the notification request, you need to verify the transaction with the P24 system. **If you don't do this, the funds will not be transferred to your account**.
 
 ```typescript
 // extract all information from callback request
@@ -112,12 +111,12 @@ const verifyRequest: Verification = {
 }
 
 const res = await p24.verifyTransaction(verifyRequest)
-console.log(res) // true on success otherwise P24Error
+console.log(res) // true on success, otherwise throws P24Error
 ```
 
-### Refund a requst
+### Refund an order
 
-To refund the customer you need to open up a refund request
+To refund a customer, you need to create a refund request.
 
 ```typescript
 const ref = {
@@ -134,21 +133,21 @@ const ref = {
 }
 
 const result = await p24.refund(ref)
-console.log(result) // returns a SuccessResponse<RefundResult[]> where you can find about each refund request in array
+console.log(result) // returns a SuccessResponse<RefundResult[]> with details about each refund request
 ```
 
-### Get Transaction Details
+### Get transaction details
 
-Retrieve detailed information about a transaction by session ID
+Retrieve detailed information about a transaction by session ID.
 
 ```typescript
 const details = await p24.getTransactionDetails('c837e1a3-c5a3-4e89-adf1-05faffd8913b')
 console.log(details) // returns TransactionDetails object with all transaction information
 ```
 
-### List Payment Methods
+### Get payment methods
 
-Get available payment methods for the merchant, optionally filtered by amount and currency
+Retrieve available payment methods for the merchant. Optionally filter by amount and currency.
 
 ```typescript
 const methods = await p24.listPaymentMethods('en', { 
@@ -158,27 +157,27 @@ const methods = await p24.listPaymentMethods('en', {
 console.log(methods) // returns array of PaymentMethod objects
 ```
 
-### Get Refunds by Order ID
+### Get refunds by order ID
 
-Retrieve all refunds for a specific order
+Retrieve all refunds for a specific order.
 
 ```typescript
 const refunds = await p24.getRefundsByOrderId('3030')
 console.log(refunds) // returns TransactionWithRefunds object containing transaction and refund details
 ```
 
-### Offline Transaction
+### Register offline transaction
 
-Register an offline transaction (e.g., bank transfer, cash)
+Register an offline transaction (e.g., bank transfer, cash).
 
 ```typescript
 const offlineTransaction = await p24.registerOfflineTransaction(token)
 console.log(offlineTransaction) // returns OfflineTransaction with bank account details
 ```
 
-### Split Payment
+### Create split payment
 
-Create a transaction with split payments to multiple recipients
+Create a transaction with split payments to multiple recipients.
 
 ```typescript
 const splitOrder = {
@@ -203,9 +202,9 @@ console.log(result) // returns Transaction with token and link
 
 ## BLIK Payments
 
-### Charge BLIK by Code
+### Charge BLIK by code
 
-Charge customer's BLIK account using a 6-digit BLIK code
+Charge a customer's BLIK account using a 6-digit BLIK code.
 
 ```typescript
 const blikParams = {
@@ -223,9 +222,9 @@ const result = await p24.chargeBlikByCode(blikParams)
 console.log(result) // returns ChargeBlikData with orderId
 ```
 
-### Charge BLIK by Alias
+### Charge BLIK by alias
 
-Charge using a saved BLIK alias (for recurring payments)
+Charge using a saved BLIK alias (for recurring payments).
 
 ```typescript
 const blikParams = {
@@ -238,9 +237,9 @@ const result = await p24.chargeBlikByAlias(blikParams)
 console.log(result) // returns ChargeBlikData with orderId
 ```
 
-### Get BLIK Aliases
+### Get BLIK aliases
 
-Retrieve BLIK aliases for a customer by email
+Retrieve BLIK aliases for a customer by email.
 
 ```typescript
 // Get standard BLIK aliases
@@ -254,9 +253,9 @@ console.log(customAliases) // returns array of BlikAlias objects
 
 ## Card Payments
 
-### Charge Card with 3D Secure
+### Charge card with 3D Secure
 
-Initiate a card payment with 3D Secure authentication
+Initiate a card payment with 3D Secure authentication.
 
 ```typescript
 const result = await p24.chargeCard3DS(token)
@@ -264,18 +263,18 @@ console.log(result) // returns { orderId, redirectUrl } for 3DS authentication
 // Redirect customer to result.redirectUrl for authentication
 ```
 
-### Charge Card without 3D Secure
+### Charge card without 3D Secure
 
-Charge a card directly without 3D Secure
+Charge a card directly without 3D Secure.
 
 ```typescript
 const result = await p24.chargeCard(token)
 console.log(result) // returns { orderId }
 ```
 
-### Charge Card Direct
+### Charge card direct
 
-Charge a card directly with custom parameters
+Charge a card directly with custom parameters.
 
 ```typescript
 const params = {
@@ -290,9 +289,9 @@ const result = await p24.chargeCardDirect(params)
 console.log(result) // returns { orderId } or { orderId, redirectUrl } if 3DS is required
 ```
 
-### Verify Card Payment Notification
+### Verify card payment notification
 
-Verify card payment notifications sent by P24
+Verify card payment notifications sent by P24.
 
 ```typescript
 const cardNotification: CardPaymentNotification = req.body
@@ -302,10 +301,10 @@ console.log(isValid) // true if notification is authentic
 
 ## Error Handling
 
-The library throws `P24Error` when API calls fail. All errors include a message and error code.
+The library throws `P24Error` when API calls fail. All errors include a message, error code, and details.
 
 ```typescript
-import { P24Error } from "@ingameltd/node-przelewy24";
+import { P24Error } from "@tax1driver/ts-przelewy24";
 
 try {
   const result = await p24.createTransaction(order)
@@ -321,9 +320,9 @@ try {
 }
 ```
 
-### Validate IP
+### Validate IP addresses
 
-Library provides method to validate IP addresses with P24 backends
+Validate IP addresses against P24 backend servers.
 
 ```typescript
 const valid = P24.isIpValid("127.0.0.1");
