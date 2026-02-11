@@ -16,10 +16,30 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
+      - name: Yarn install, build, and test
         run: |
-          npm ci
-          npm run build --if-present
-          npm test
+          yarn install --immutable --immutable-cache --check-cache
+          yarn build
+          yarn test
         env:
           CI: true
+  publish-docs:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Build docs
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+      - run: yarn docs
+      - run: touch docs/.nojekyll
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs # The folder the action should deploy.
