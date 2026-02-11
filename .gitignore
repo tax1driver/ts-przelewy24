@@ -4,3 +4,5 @@ dist
 .idea
 src/test.ts
 docs
+
+.yarn

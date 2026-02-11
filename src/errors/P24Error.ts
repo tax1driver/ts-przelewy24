@@ -31,8 +31,21 @@
  * @extends {Error}
  */
 export class P24Error extends Error {
-    constructor(error: string, code: Number, extra?: unknown) {
-        super(`error = ${error}, code = ${code}, extra = ${extra}`); // 'Error' breaks prototype chain here
+    public error: string;
+    public code: number;
+    public details?: unknown;
+
+    constructor(error: string, code: number, details?: unknown) {
+        const message = details
+            ? `${error} (code: ${code}, details: ${JSON.stringify(details)})`
+            : `${error} (code: ${code})`;
+        super(message);
+
+        this.error = error;
+        this.code = code;
+        this.details = details;
+        this.name = 'P24Error';
+
         Object.setPrototypeOf(this, new.target.prototype);
     }
 }

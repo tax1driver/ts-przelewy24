@@ -1,3 +1,9 @@
+/**
+ * Data returned after order creation
+ *
+ * @export
+ * @interface OrderCreatedData
+ */
 export interface OrderCreatedData {
     /**
      * Token to do a payment redirect
